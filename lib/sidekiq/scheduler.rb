@@ -134,6 +134,16 @@ module Sidekiq
         end
       end
 
+      # Get the jobs next runtime
+      #
+      # @param [String] name The job's name
+      def next_time(name)
+        Sidekiq.redis do |r|
+          time = r.hget(next_times_key, name)
+          Time.parse(time) if time
+        end
+      end
+
       # Pushes job's next time execution
       #
       # @param [String] name The job's name

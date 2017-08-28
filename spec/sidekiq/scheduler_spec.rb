@@ -921,6 +921,42 @@ describe Sidekiq::Scheduler do
     end
   end
 
+  describe '.next_time' do
+    subject { described_class.update_job_next_time(job_name, next_time) }
+
+    let(:job_name) { 'job_name' }
+
+    context 'when job name does not return anything' do
+      it "returns nil when r.get returns nil"  do
+        job_next_time = described_class.next_time('gibberish')
+
+        expect(job_next_time).not_to be
+      end
+    end
+
+    context 'when the next time is nil' do
+      let(:next_time) { nil }
+
+      it "returns nil when r.get returns nil"  do
+        subject
+        job_next_time = described_class.next_time(job_name)
+
+        expect(job_next_time).not_to be
+      end
+    end
+
+    context 'when the next time is present' do
+      let(:next_time) { Time.new(2016, 9, 6) }
+
+      it 'returns the next time time' do
+        subject
+        job_next_time = described_class.next_time(job_name)
+
+        expect(job_next_time).to eq(next_time)
+      end
+    end
+  end
+
   describe '.update_job_next_time' do
     subject { described_class.update_job_next_time(job_name, next_time) }
 
