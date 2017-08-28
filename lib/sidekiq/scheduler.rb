@@ -134,10 +134,10 @@ module Sidekiq
         end
       end
 
-      # Get the jobs next runtime
+      # Get the jobs next occurrence
       #
       # @param [String] name The job's name
-      def next_time(name)
+      def next_occurrence(name)
         Sidekiq.redis do |r|
           time = r.hget(next_times_key, name)
           Time.parse(time) if time
